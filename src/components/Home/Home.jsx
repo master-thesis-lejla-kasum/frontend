@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { Stack, ThemeProvider } from '@mui/material';
 import theme from "../../theme/theme";
@@ -63,10 +64,25 @@ const Home = () => {
                     <div className="home_wrapper">
                         <Stack direction="row" justifyContent="space-evenly">
                             <div>
-                                <Button variant="contained" color="secondary" size="large">PRIJAVI POZITIVAN TEST</Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    size="large"
+                                >
+                                    PRIJAVI POZITIVAN TEST
+                                </Button>
+
                             </div>
                             <div>
-                                <Button variant="contained" color="secondary" size="large">PRIJAVA ZA VAKCINACIJU</Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    size="large"
+                                    onClick={() => window.location.href = "/vaccine-registration"}
+
+                                >
+                                    PRIJAVA ZA VAKCINACIJU
+                                </Button>
                             </div>
                             <div>
                                 <Button variant="contained" color="secondary" size="large">TRENUTNE MJERE</Button>

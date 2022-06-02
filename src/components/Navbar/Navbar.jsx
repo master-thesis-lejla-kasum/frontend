@@ -22,7 +22,7 @@ const Navbar = () => {
                     </Stack>
                     <Stack direction="row" spacing={3} justifyContent="space-between">
                         <Stack direction="row">
-                            <Button color="white">POČETNA</Button>
+                            <Button color="white" onClick={() => window.location.href = "/"}>POČETNA</Button>
                             <Button color="white">O PORTALU</Button>
                             <Button color="white">ŠTA JE COVID-19?</Button>
                             <Button color="white">MJERE I PREPORUKE</Button>
