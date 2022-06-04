@@ -1,11 +1,141 @@
 import { Button, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import applicationService from "../../service/applicationService";
 import theme from "../../theme/theme";
+import { emptyOrNull, validBornId, validEmail } from "../../util/validationUtils";
 import Footer from "../Navbar/Footer";
 import Navbar from "../Navbar/Navbar";
 import "./VaccineRegistration.css"
 
-const VaccineRegistration = () => {
+const VaccineRegistration = ({ baseUrl }) => {
+
+    const [name, setName] = useState();
+    const [surname, setSurname] = useState();
+    const [bornId, setBornId] = useState();
+    const [identificationId, setIdentificationId] = useState();
+    const [birthday, setBirthday] = useState();
+    const [phoneNumber, setPhoneNumber] = useState();
+    const [email, setEmail] = useState();
+    const [selectedInstitution, setSelectedInstitution] = useState(1);
+
+    const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+
+    }, [errors])
+
+    function onNameChange(value) {
+        delete errors.name;
+        setName(value);
+    }
+
+    function onSurnameChange(value) {
+        delete errors.surname;
+        setSurname(value);
+    }
+
+    function onBornIdChange(value) {
+        delete errors.bornId;
+        setBornId(value);
+    }
+
+    function onIdentificationIdChange(value) {
+        delete errors.identificationId;
+        setIdentificationId(value);
+    }
+
+    function onBirthdayChange(value) {
+        delete errors.birthday;
+        setBirthday(value);
+    }
+
+    function onPhoneNumberChange(value) {
+        delete errors.phoneNumber;
+        setPhoneNumber(value);
+    }
+
+    function onEmailChange(value) {
+        delete errors.email;
+        setEmail(value);
+    }
+
+    function validate() {
+        var err = {};
+        var valid = true;
+
+        if (emptyOrNull(name)) {
+            err.name = "Ime mora biti uneseno";
+        }
+
+        if (emptyOrNull(surname)) {
+            err.surname = "Prezime mora biti uneseno";
+        }
+
+        if (!validBornId(bornId)) {
+            err.bornId = "Neispravan JMBG";
+        }
+
+        if (emptyOrNull(identificationId)) {
+            err.identificationId = "Broj ličnog dokumenta mora biti unesen";
+        }
+
+        if (emptyOrNull(birthday)) {
+            err.birthday = "Datum rodjenja mora biti unesen";
+        }
+
+        if (emptyOrNull(phoneNumber)) {
+            err.phoneNumber = "Broj telefona mora biti unesen"
+        }
+
+        if (!emptyOrNull(email) && !validEmail(email)) {
+            err.email = "Email neispravan";
+        }
+
+        if (Object.keys(err).length > 0) {
+            valid = false;
+        }
+
+        setErrors(err)
+
+        return valid;
+    }
+
+    function sendApplication() {
+
+        if (!validate()) {
+            return;
+        }
+
+        const request = {
+            type: "Vakcina",
+            date: new Date().toISOString(),
+            personalId: bornId,
+            identificationId: identificationId,
+            name: name,
+            surname: surname,
+            birthDate: birthday,
+            phoneNumber: phoneNumber,
+            email: email,
+            institution: {
+                id: selectedInstitution
+            }
+        }
+
+        console.log(request);
+
+        //TODO call server
+        /*
+        applicationService.submitApplicaion(baseUrl, request)
+            .then(response => {
+                alert("Uspjesno")
+            })
+            .catch(error => {
+                alert("greska")
+            })
+            */
+    }
+
+
     return (
         <ThemeProvider theme={theme}>
             <Stack spacing={10}>
@@ -21,65 +151,86 @@ const VaccineRegistration = () => {
                             </Stack>
                             <Stack className="input">
                                 <TextField
+                                    error={errors.name != null}
+                                    helperText={errors.name ? errors.name : ""}
                                     id="vacc-reg_name"
                                     label="Ime"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    onChange={e => onNameChange(e.target.value)}
                                 />
                             </Stack>
                             <Stack className="input">
                                 <TextField
+                                    error={errors.surname != null}
+                                    helperText={errors.surname ? errors.surname : ""}
                                     id="vacc-reg_surname"
                                     label="Prezime"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    onChange={e => onSurnameChange(e.target.value)}
                                 />
                             </Stack>
                             <Stack className="input">
                                 <TextField
+                                    error={errors.bornId != null}
+                                    helperText={errors.bornId ? errors.bornId : ""}
                                     id="vacc-reg_born-id"
                                     label="Jedinstveni matični broj"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    onChange={e => onBornIdChange(e.target.value)}
                                 />
                             </Stack>
                             <Stack className="input">
                                 <TextField
+                                    error={errors.identificationId != null}
+                                    helperText={errors.identificationId ? errors.identificationId : ""}
                                     id="vacc-reg_personal-id"
                                     label="Broj ličnog dokumenta"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    onChange={e => onIdentificationIdChange(e.target.value)}
                                 />
                             </Stack>
                             <Stack className="input">
                                 <TextField
+                                    error={errors.birthday != null}
+                                    helperText={errors.birthday ? errors.birthday : ""}
                                     id="vacc-reg_birthdate"
                                     label="Datum rođenja"
                                     variant="outlined"
                                     type="date"
                                     InputLabelProps={{ shrink: true }}
+                                    onChange={e => onBirthdayChange(e.target.value)}
 
                                 />
                             </Stack>
                             <Stack className="input">
                                 <TextField
+                                    error={errors.phoneNumber != null}
+                                    helperText={errors.phoneNumber ? errors.phoneNumber : ""}
                                     id="vacc-reg_phone"
                                     label="Broj telefona"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    onChange={e => onPhoneNumberChange(e.target.value)}
                                 />
                             </Stack>
                             <Stack className="input">
                                 <TextField
+                                    error={errors.email != null}
+                                    helperText={errors.email ? errors.email : ""}
                                     id="vacc-reg_email"
                                     label="Email"
                                     variant="outlined"
                                     type="email"
+                                    onChange={e => onEmailChange(e.target.value)}
                                 />
                             </Stack>
                             <Stack className="input">
@@ -88,7 +239,8 @@ const VaccineRegistration = () => {
                                     labelId="vacc-reg_institution-dropdown-label"
                                     id="vacc-reg_institution-dropdown"
                                     variant="outlined"
-                                    value="1"
+                                    value={selectedInstitution}
+                                    onChange={e => setSelectedInstitution(e.target.value)}
 
                                 >
                                     <MenuItem key="1" value="1">Dom zdravlja Jajce</MenuItem>
@@ -102,6 +254,7 @@ const VaccineRegistration = () => {
                                     className="button"
                                     variant="contained"
                                     color="success"
+                                    onClick={(e) => sendApplication()}
                                 >
                                     POŠALJI PRIJAVU
                                 </Button>
