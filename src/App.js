@@ -2,6 +2,7 @@ import './App.css';
 import { Route, BrowserRouter, Routes } from "react-router-dom"
 import Home from './components/Home/Home';
 import VaccineRegistration from './components/VaccineRegistration/VaccineRegistration';
+import TestRegistration from './components/TestRegistration/TestRegistration';
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path='/' exact element={<Home />}></Route>
           <Route path="/vaccine-registration" element={<VaccineRegistration baseUrl={BASE_URL} />}></Route>
+          <Route path="/test-registration" element={<TestRegistration baseUrl={BASE_URL} />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

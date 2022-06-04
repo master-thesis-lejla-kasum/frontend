@@ -5,9 +5,9 @@ import theme from "../../theme/theme";
 import { emptyOrNull, validBornId, validEmail } from "../../util/validationUtils";
 import Footer from "../Navbar/Footer";
 import Navbar from "../Navbar/Navbar";
-import "./VaccineRegistration.css"
+import "./TestRegistration.css"
 
-const VaccineRegistration = ({ baseUrl }) => {
+const TestRegistration = ({ baseUrl }) => {
 
     const [name, setName] = useState();
     const [surname, setSurname] = useState();
@@ -17,6 +17,8 @@ const VaccineRegistration = ({ baseUrl }) => {
     const [phoneNumber, setPhoneNumber] = useState();
     const [email, setEmail] = useState();
     const [selectedInstitution, setSelectedInstitution] = useState(1);
+    const [testDate, setTestDate] = useState();
+    const [testId, setTestId] = useState();
 
     const [errors, setErrors] = useState({});
 
@@ -63,6 +65,16 @@ const VaccineRegistration = ({ baseUrl }) => {
         setEmail(value);
     }
 
+    function onTestDateChange(value) {
+        delete errors.testDate;
+        setTestDate(value);
+    }
+
+    function onTestIdChange(value) {
+        delete errors.testId;
+        setTestId(value);
+    }
+
     function validate() {
         var err = {};
         var valid = true;
@@ -99,6 +111,14 @@ const VaccineRegistration = ({ baseUrl }) => {
             valid = false;
         }
 
+        if (emptyOrNull(testDate)) {
+            err.testDate = "Datum testiranja mora biti unesen"
+        }
+
+        if (emptyOrNull(testId)) {
+            err.testId = "Identifikacioni broj testa mora biti unesen"
+        }
+
         setErrors(err)
 
         return valid;
@@ -111,7 +131,7 @@ const VaccineRegistration = ({ baseUrl }) => {
         }
 
         const request = {
-            type: "Vakcina",
+            type: "Test",
             date: new Date().toISOString(),
             personalId: bornId,
             identificationId: identificationId,
@@ -120,6 +140,8 @@ const VaccineRegistration = ({ baseUrl }) => {
             birthDate: birthday,
             phoneNumber: phoneNumber,
             email: email,
+            testingDate: testDate,
+            testId: testId,
             institution: {
                 id: selectedInstitution
             }
@@ -151,7 +173,7 @@ const VaccineRegistration = ({ baseUrl }) => {
                     <div className="form-wrapper">
                         <Stack spacing={3}>
                             <Stack className="title">
-                                PRIJAVA ZA VAKCINACIJU
+                                PRIJAVA POZITIVNOG TESTA
                             </Stack>
                             <Stack className="input">
                                 <TextField
@@ -238,6 +260,31 @@ const VaccineRegistration = ({ baseUrl }) => {
                                 />
                             </Stack>
                             <Stack className="input">
+                                <TextField
+                                    error={errors.testDate != null}
+                                    helperText={errors.testDate ? errors.testDate : ""}
+                                    id="vacc-reg_testingDate"
+                                    label="Datum testiranja"
+                                    variant="outlined"
+                                    type="date"
+                                    InputLabelProps={{ shrink: true }}
+                                    onChange={e => onTestDateChange(e.target.value)}
+
+                                />
+                            </Stack>
+                            <Stack className="input">
+                                <TextField
+                                    error={errors.testId != null}
+                                    helperText={errors.testId ? errors.testId : ""}
+                                    id="vacc-reg_testId"
+                                    label="Identifikacioni broj testa"
+                                    variant="outlined"
+                                    type="text"
+                                    required
+                                    onChange={e => onTestIdChange(e.target.value)}
+                                />
+                            </Stack>
+                            <Stack className="input">
                                 <InputLabel id="vacc-reg_institution-dropdown-label">Institucija</InputLabel>
                                 <Select
                                     labelId="vacc-reg_institution-dropdown-label"
@@ -275,4 +322,4 @@ const VaccineRegistration = ({ baseUrl }) => {
     )
 }
 
-export default VaccineRegistration;
+export default TestRegistration;

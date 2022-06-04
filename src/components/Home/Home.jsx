@@ -67,6 +67,7 @@ const Home = () => {
                                     variant="contained"
                                     color="secondary"
                                     size="large"
+                                    onClick={() => window.location.href = "/test-registration"}
                                 >
                                     PRIJAVI POZITIVAN TEST
                                 </Button>
