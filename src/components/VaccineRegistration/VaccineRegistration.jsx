@@ -10,14 +10,16 @@ import "./VaccineRegistration.css"
 
 const VaccineRegistration = ({ covidBaseUrl, authBaseUrl }) => {
 
-    const [name, setName] = useState();
-    const [surname, setSurname] = useState();
-    const [bornId, setBornId] = useState();
-    const [identificationId, setIdentificationId] = useState();
-    const [birthday, setBirthday] = useState();
-    const [phoneNumber, setPhoneNumber] = useState();
-    const [email, setEmail] = useState();
+    const [name, setName] = useState("");
+    const [surname, setSurname] = useState("");
+    const [bornId, setBornId] = useState("");
+    const [identificationId, setIdentificationId] = useState("");
+    const [birthday, setBirthday] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [email, setEmail] = useState("");
     const [selectedInstitution, setSelectedInstitution] = useState(0);
+    const [testDate, setTestDate] = useState("");
+    const [testId, setTestId] = useState("");
 
     const [availableInstitutions, setAvailableInstitutions] = useState([]);
     const [errors, setErrors] = useState({});
@@ -167,7 +169,7 @@ const VaccineRegistration = ({ covidBaseUrl, authBaseUrl }) => {
 
             })
             .catch(error => {
-                setShowtToast(false);
+                setShowtToast(true);
                 setToasVariant("error");
                 setToastMessage("Nešto je pošlo po zlu, molimo pokušajte kasnije")
             })

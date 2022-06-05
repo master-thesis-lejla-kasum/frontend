@@ -1,29 +1,41 @@
-import { Button, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider } from "@mui/material";
+import { Alert, Button, InputLabel, MenuItem, Select, Snackbar, Stack, TextField, ThemeProvider } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import applicationService from "../../service/applicationService";
+import institutionService from "../../service/institutionService";
 import theme from "../../theme/theme";
 import { emptyOrNull, validBornId, validEmail } from "../../util/validationUtils";
 import Footer from "../Navbar/Footer";
 import Navbar from "../Navbar/Navbar";
 import "./TestRegistration.css"
 
-const TestRegistration = ({ baseUrl }) => {
+const TestRegistration = ({ covidBaseUrl, authBaseUrl }) => {
 
-    const [name, setName] = useState();
-    const [surname, setSurname] = useState();
-    const [bornId, setBornId] = useState();
-    const [identificationId, setIdentificationId] = useState();
-    const [birthday, setBirthday] = useState();
-    const [phoneNumber, setPhoneNumber] = useState();
-    const [email, setEmail] = useState();
-    const [selectedInstitution, setSelectedInstitution] = useState(1);
-    const [testDate, setTestDate] = useState();
-    const [testId, setTestId] = useState();
+    const [name, setName] = useState("");
+    const [surname, setSurname] = useState("");
+    const [bornId, setBornId] = useState("");
+    const [identificationId, setIdentificationId] = useState("");
+    const [birthday, setBirthday] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [email, setEmail] = useState("");
+    const [selectedInstitution, setSelectedInstitution] = useState(0);
+    const [testDate, setTestDate] = useState("");
+    const [testId, setTestId] = useState("");
 
+    const [availableInstitutions, setAvailableInstitutions] = useState([]);
     const [errors, setErrors] = useState({});
+    const [showToast, setShowtToast] = useState(false);
+    const [toastVariant, setToasVariant] = useState("success");
+    const [toastMessage, setToastMessage] = useState("");
 
     useEffect(() => {
-        //TODO Get institutions
+        institutionService.getInstitutions(authBaseUrl)
+            .then(response => {
+                setAvailableInstitutions(response.data);
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
     }, [])
 
     useEffect(() => {
@@ -63,6 +75,11 @@ const TestRegistration = ({ baseUrl }) => {
     function onEmailChange(value) {
         delete errors.email;
         setEmail(value);
+    }
+
+    function onInstitutionChange(value) {
+        delete errors.institution;
+        setSelectedInstitution(value);
     }
 
     function onTestDateChange(value) {
@@ -107,8 +124,8 @@ const TestRegistration = ({ baseUrl }) => {
             err.email = "Email neispravan";
         }
 
-        if (Object.keys(err).length > 0) {
-            valid = false;
+        if (selectedInstitution == 0) {
+            err.institution = "Odaberite instituciju";
         }
 
         if (emptyOrNull(testDate)) {
@@ -119,9 +136,26 @@ const TestRegistration = ({ baseUrl }) => {
             err.testId = "Identifikacioni broj testa mora biti unesen"
         }
 
+        if (Object.keys(err).length > 0) {
+            valid = false;
+        }
+
         setErrors(err)
 
         return valid;
+    }
+
+    function clearForm() {
+        setName("");
+        setSurname("");
+        setBornId("");
+        setIdentificationId("");
+        setBirthday("");
+        setPhoneNumber("");
+        setEmail("");
+        setSelectedInstitution(0);
+        setTestDate("");
+        setTestId("");
     }
 
     function sendApplication() {
@@ -147,23 +181,34 @@ const TestRegistration = ({ baseUrl }) => {
             }
         }
 
-        console.log(request);
-
-        //TODO call server
-        /*
-        applicationService.submitApplicaion(baseUrl, request)
+        applicationService.submitApplicaion(covidBaseUrl, request)
             .then(response => {
-                alert("Uspjesno")
+                setShowtToast(true);
+                setToasVariant("success");
+                setToastMessage("Prijava je uspješno poslana")
+                clearForm();
+
             })
             .catch(error => {
-                alert("greska")
+                setShowtToast(true);
+                setToasVariant("error");
+                setToastMessage("Nešto je pošlo po zlu, molimo pokušajte kasnije")
             })
-            */
     }
+
+    const listInstitutions = availableInstitutions && availableInstitutions.map((inst) =>
+        <MenuItem key={inst.id} value={inst.id}>{inst.name}</MenuItem>
+    )
 
 
     return (
         <ThemeProvider theme={theme}>
+            <Snackbar open={showToast} autoHideDuration={6000}>
+                <Alert variant="filled" severity={toastVariant}>
+                    {toastMessage}
+                </Alert>
+            </Snackbar>
+
             <Stack spacing={10}>
                 <Stack>
                     <Navbar />
@@ -179,11 +224,12 @@ const TestRegistration = ({ baseUrl }) => {
                                 <TextField
                                     error={errors.name != null}
                                     helperText={errors.name ? errors.name : ""}
-                                    id="vacc-reg_name"
+                                    id="test-reg_name"
                                     label="Ime"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={name}
                                     onChange={e => onNameChange(e.target.value)}
                                 />
                             </Stack>
@@ -191,11 +237,12 @@ const TestRegistration = ({ baseUrl }) => {
                                 <TextField
                                     error={errors.surname != null}
                                     helperText={errors.surname ? errors.surname : ""}
-                                    id="vacc-reg_surname"
+                                    id="test-reg_surname"
                                     label="Prezime"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={surname}
                                     onChange={e => onSurnameChange(e.target.value)}
                                 />
                             </Stack>
@@ -203,11 +250,12 @@ const TestRegistration = ({ baseUrl }) => {
                                 <TextField
                                     error={errors.bornId != null}
                                     helperText={errors.bornId ? errors.bornId : ""}
-                                    id="vacc-reg_born-id"
+                                    id="test-reg_born-id"
                                     label="Jedinstveni matični broj"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={bornId}
                                     onChange={e => onBornIdChange(e.target.value)}
                                 />
                             </Stack>
@@ -215,11 +263,12 @@ const TestRegistration = ({ baseUrl }) => {
                                 <TextField
                                     error={errors.identificationId != null}
                                     helperText={errors.identificationId ? errors.identificationId : ""}
-                                    id="vacc-reg_personal-id"
+                                    id="test-reg_personal-id"
                                     label="Broj ličnog dokumenta"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={identificationId}
                                     onChange={e => onIdentificationIdChange(e.target.value)}
                                 />
                             </Stack>
@@ -227,11 +276,12 @@ const TestRegistration = ({ baseUrl }) => {
                                 <TextField
                                     error={errors.birthday != null}
                                     helperText={errors.birthday ? errors.birthday : ""}
-                                    id="vacc-reg_birthdate"
+                                    id="test-reg_birthdate"
                                     label="Datum rođenja"
                                     variant="outlined"
                                     type="date"
                                     InputLabelProps={{ shrink: true }}
+                                    value={birthday}
                                     onChange={e => onBirthdayChange(e.target.value)}
 
                                 />
@@ -240,11 +290,12 @@ const TestRegistration = ({ baseUrl }) => {
                                 <TextField
                                     error={errors.phoneNumber != null}
                                     helperText={errors.phoneNumber ? errors.phoneNumber : ""}
-                                    id="vacc-reg_phone"
+                                    id="test-reg_phone"
                                     label="Broj telefona"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={phoneNumber}
                                     onChange={e => onPhoneNumberChange(e.target.value)}
                                 />
                             </Stack>
@@ -252,10 +303,11 @@ const TestRegistration = ({ baseUrl }) => {
                                 <TextField
                                     error={errors.email != null}
                                     helperText={errors.email ? errors.email : ""}
-                                    id="vacc-reg_email"
+                                    id="test-reg_email"
                                     label="Email"
                                     variant="outlined"
                                     type="email"
+                                    value={email}
                                     onChange={e => onEmailChange(e.target.value)}
                                 />
                             </Stack>
@@ -263,11 +315,12 @@ const TestRegistration = ({ baseUrl }) => {
                                 <TextField
                                     error={errors.testDate != null}
                                     helperText={errors.testDate ? errors.testDate : ""}
-                                    id="vacc-reg_testingDate"
+                                    id="test-reg_testingDate"
                                     label="Datum testiranja"
                                     variant="outlined"
                                     type="date"
                                     InputLabelProps={{ shrink: true }}
+                                    value={testDate}
                                     onChange={e => onTestDateChange(e.target.value)}
 
                                 />
@@ -276,32 +329,34 @@ const TestRegistration = ({ baseUrl }) => {
                                 <TextField
                                     error={errors.testId != null}
                                     helperText={errors.testId ? errors.testId : ""}
-                                    id="vacc-reg_testId"
+                                    id="test-reg_testId"
                                     label="Identifikacioni broj testa"
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={testId}
                                     onChange={e => onTestIdChange(e.target.value)}
                                 />
                             </Stack>
                             <Stack className="input">
-                                <InputLabel id="vacc-reg_institution-dropdown-label">Institucija</InputLabel>
+                                <InputLabel id="test-reg_institution-dropdown-label">Institucija</InputLabel>
                                 <Select
-                                    labelId="vacc-reg_institution-dropdown-label"
-                                    id="vacc-reg_institution-dropdown"
+                                    error={errors.institution != null}
+                                    labelId="test-reg_institution-dropdown-label"
+                                    id="test-reg_institution-dropdown"
                                     variant="outlined"
                                     value={selectedInstitution}
-                                    onChange={e => setSelectedInstitution(e.target.value)}
+                                    onChange={e => onInstitutionChange(e.target.value)}
 
                                 >
-                                    <MenuItem key="1" value="1">Dom zdravlja Jajce</MenuItem>
-                                    <MenuItem key="2" value="2">Dom zdravlja Ilidža</MenuItem>
+                                    <MenuItem key="0" value="0">Odaberi instituciju</MenuItem>
+                                    {listInstitutions}
                                 </Select>
                             </Stack>
 
                             <Stack className="send-button">
                                 <Button
-                                    id="vacc-reg_send-button"
+                                    id="test-reg_send-button"
                                     className="button"
                                     variant="contained"
                                     color="success"

@@ -22,7 +22,14 @@ function App() {
             />}
           >
           </Route>
-          <Route path="/test-registration" element={<TestRegistration covidBaseUrl={COVID_BASE_URL} />}></Route>
+          <Route
+            path="/test-registration"
+            element={<TestRegistration
+              covidBaseUrl={COVID_BASE_URL}
+              authBaseUrl={AUTH_BASE_URL}
+            />}
+          >
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
