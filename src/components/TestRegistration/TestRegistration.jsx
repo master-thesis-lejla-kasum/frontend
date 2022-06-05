@@ -131,7 +131,7 @@ const TestRegistration = ({ baseUrl }) => {
         }
 
         const request = {
-            type: "Test",
+            type: "TEST",
             date: new Date().toISOString(),
             personalId: bornId,
             identificationId: identificationId,

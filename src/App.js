@@ -6,15 +6,23 @@ import TestRegistration from './components/TestRegistration/TestRegistration';
 
 function App() {
 
-  const BASE_URL = "http://localhost:8081";
+  const COVID_BASE_URL = "http://localhost:8081";
+  const AUTH_BASE_URL = "http://localhost:8080"
 
   return (
     <div>
       <BrowserRouter>
         <Routes>
           <Route path='/' exact element={<Home />}></Route>
-          <Route path="/vaccine-registration" element={<VaccineRegistration baseUrl={BASE_URL} />}></Route>
-          <Route path="/test-registration" element={<TestRegistration baseUrl={BASE_URL} />}></Route>
+          <Route
+            path="/vaccine-registration"
+            element={<VaccineRegistration
+              covidBaseUrl={COVID_BASE_URL}
+              authBaseUrl={AUTH_BASE_URL}
+            />}
+          >
+          </Route>
+          <Route path="/test-registration" element={<TestRegistration covidBaseUrl={COVID_BASE_URL} />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

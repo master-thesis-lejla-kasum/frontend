@@ -1,13 +1,14 @@
-import { Button, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider } from "@mui/material";
+import { Button, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Snackbar, Alert } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import applicationService from "../../service/applicationService";
+import institutionService from "../../service/institutionService";
 import theme from "../../theme/theme";
 import { emptyOrNull, validBornId, validEmail } from "../../util/validationUtils";
 import Footer from "../Navbar/Footer";
 import Navbar from "../Navbar/Navbar";
 import "./VaccineRegistration.css"
 
-const VaccineRegistration = ({ baseUrl }) => {
+const VaccineRegistration = ({ covidBaseUrl, authBaseUrl }) => {
 
     const [name, setName] = useState();
     const [surname, setSurname] = useState();
@@ -16,12 +17,24 @@ const VaccineRegistration = ({ baseUrl }) => {
     const [birthday, setBirthday] = useState();
     const [phoneNumber, setPhoneNumber] = useState();
     const [email, setEmail] = useState();
-    const [selectedInstitution, setSelectedInstitution] = useState(1);
+    const [selectedInstitution, setSelectedInstitution] = useState(0);
 
+    const [availableInstitutions, setAvailableInstitutions] = useState([]);
     const [errors, setErrors] = useState({});
+    const [showToast, setShowtToast] = useState(false);
+    const [toastVariant, setToasVariant] = useState("");
+    const [toastMessage, setToastMessage] = useState("");
 
     useEffect(() => {
-        //TODO Get institutions
+        institutionService.getInstitutions(authBaseUrl)
+            .then(response => {
+                setAvailableInstitutions(response.data);
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+
     }, [])
 
     useEffect(() => {
@@ -63,6 +76,11 @@ const VaccineRegistration = ({ baseUrl }) => {
         setEmail(value);
     }
 
+    function onInstitutionChange(value) {
+        delete errors.institution;
+        setSelectedInstitution(value);
+    }
+
     function validate() {
         var err = {};
         var valid = true;
@@ -95,6 +113,10 @@ const VaccineRegistration = ({ baseUrl }) => {
             err.email = "Email neispravan";
         }
 
+        if (selectedInstitution == 0) {
+            err.institution = "Odaberite instituciju";
+        }
+
         if (Object.keys(err).length > 0) {
             valid = false;
         }
@@ -104,6 +126,17 @@ const VaccineRegistration = ({ baseUrl }) => {
         return valid;
     }
 
+    function clearForm() {
+        setName("");
+        setSurname("");
+        setBornId("");
+        setIdentificationId("");
+        setBirthday("");
+        setPhoneNumber("");
+        setEmail("");
+        setSelectedInstitution(0);
+    }
+
     function sendApplication() {
 
         if (!validate()) {
@@ -111,7 +144,7 @@ const VaccineRegistration = ({ baseUrl }) => {
         }
 
         const request = {
-            type: "Vakcina",
+            type: "VACCINE",
             date: new Date().toISOString(),
             personalId: bornId,
             identificationId: identificationId,
@@ -125,23 +158,33 @@ const VaccineRegistration = ({ baseUrl }) => {
             }
         }
 
-        console.log(request);
-
-        //TODO call server
-        /*
-        applicationService.submitApplicaion(baseUrl, request)
+        applicationService.submitApplicaion(covidBaseUrl, request)
             .then(response => {
-                alert("Uspjesno")
+                setShowtToast(true);
+                setToasVariant("success");
+                setToastMessage("Prijava je uspješno poslana")
+                clearForm();
+
             })
             .catch(error => {
-                alert("greska")
+                setShowtToast(false);
+                setToasVariant("error");
+                setToastMessage("Nešto je pošlo po zlu, molimo pokušajte kasnije")
             })
-            */
     }
+
+    const listInstitutions = availableInstitutions && availableInstitutions.map((inst) =>
+        <MenuItem key={inst.id} value={inst.id}>{inst.name}</MenuItem>
+    )
 
 
     return (
         <ThemeProvider theme={theme}>
+            <Snackbar open={showToast} autoHideDuration={6000}>
+                <Alert variant="filled" severity={toastVariant}>
+                    {toastMessage}
+                </Alert>
+            </Snackbar>
             <Stack spacing={10}>
                 <Stack>
                     <Navbar />
@@ -162,6 +205,7 @@ const VaccineRegistration = ({ baseUrl }) => {
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={name}
                                     onChange={e => onNameChange(e.target.value)}
                                 />
                             </Stack>
@@ -174,6 +218,7 @@ const VaccineRegistration = ({ baseUrl }) => {
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={surname}
                                     onChange={e => onSurnameChange(e.target.value)}
                                 />
                             </Stack>
@@ -186,6 +231,7 @@ const VaccineRegistration = ({ baseUrl }) => {
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={bornId}
                                     onChange={e => onBornIdChange(e.target.value)}
                                 />
                             </Stack>
@@ -198,6 +244,7 @@ const VaccineRegistration = ({ baseUrl }) => {
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={identificationId}
                                     onChange={e => onIdentificationIdChange(e.target.value)}
                                 />
                             </Stack>
@@ -210,6 +257,7 @@ const VaccineRegistration = ({ baseUrl }) => {
                                     variant="outlined"
                                     type="date"
                                     InputLabelProps={{ shrink: true }}
+                                    value={birthday}
                                     onChange={e => onBirthdayChange(e.target.value)}
 
                                 />
@@ -223,6 +271,7 @@ const VaccineRegistration = ({ baseUrl }) => {
                                     variant="outlined"
                                     type="text"
                                     required
+                                    value={phoneNumber}
                                     onChange={e => onPhoneNumberChange(e.target.value)}
                                 />
                             </Stack>
@@ -234,21 +283,23 @@ const VaccineRegistration = ({ baseUrl }) => {
                                     label="Email"
                                     variant="outlined"
                                     type="email"
+                                    value={email}
                                     onChange={e => onEmailChange(e.target.value)}
                                 />
                             </Stack>
                             <Stack className="input">
                                 <InputLabel id="vacc-reg_institution-dropdown-label">Institucija</InputLabel>
                                 <Select
+                                    error={errors.institution != null}
                                     labelId="vacc-reg_institution-dropdown-label"
                                     id="vacc-reg_institution-dropdown"
                                     variant="outlined"
                                     value={selectedInstitution}
-                                    onChange={e => setSelectedInstitution(e.target.value)}
+                                    onChange={e => onInstitutionChange(e.target.value)}
 
                                 >
-                                    <MenuItem key="1" value="1">Dom zdravlja Jajce</MenuItem>
-                                    <MenuItem key="2" value="2">Dom zdravlja Ilidža</MenuItem>
+                                    <MenuItem key="0" value="0">Odaberi instituciju</MenuItem>
+                                    {listInstitutions}
                                 </Select>
                             </Stack>
 
