@@ -1,7 +1,7 @@
 import { Button, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Snackbar, Alert } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import applicationService from "../../service/applicationService";
-import institutionService from "../../service/institutionService";
+import publicInstitutionService from "../../service/publicInstitutionService";
 import theme from "../../theme/theme";
 import { emptyOrNull, validBornId, validEmail } from "../../util/validationUtils";
 import Footer from "../Navbar/Footer";
@@ -17,18 +17,16 @@ const VaccineRegistration = ({ covidBaseUrl, authBaseUrl }) => {
     const [birthday, setBirthday] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
-    const [selectedInstitution, setSelectedInstitution] = useState(0);
-    const [testDate, setTestDate] = useState("");
-    const [testId, setTestId] = useState("");
+    const [selectedInstitution, setSelectedInstitution] = useState("0");
 
     const [availableInstitutions, setAvailableInstitutions] = useState([]);
     const [errors, setErrors] = useState({});
     const [showToast, setShowtToast] = useState(false);
-    const [toastVariant, setToasVariant] = useState("");
+    const [toastVariant, setToasVariant] = useState("success");
     const [toastMessage, setToastMessage] = useState("");
 
     useEffect(() => {
-        institutionService.getInstitutions(authBaseUrl)
+        publicInstitutionService.getInstitutions(covidBaseUrl)
             .then(response => {
                 setAvailableInstitutions(response.data);
             })
@@ -115,7 +113,7 @@ const VaccineRegistration = ({ covidBaseUrl, authBaseUrl }) => {
             err.email = "Email neispravan";
         }
 
-        if (selectedInstitution == 0) {
+        if (selectedInstitution === "0") {
             err.institution = "Odaberite instituciju";
         }
 

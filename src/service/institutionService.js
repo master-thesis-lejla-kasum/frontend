@@ -1,5 +1,5 @@
 import axios from "axios";
 
-const getInstitutions = (baseUrl) => axios.get(baseUrl + "/api/v1/institution");
+const createInstitution = (baseUrl, request) => axios.post(baseUrl + "/api/v1/institution", request);
 
-export default { getInstitutions };
+export default { createInstitution };
