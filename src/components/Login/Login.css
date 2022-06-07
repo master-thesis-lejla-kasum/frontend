@@ -10,8 +10,8 @@
 }
 
 .form-wrapper {
-    margin-left: 200px;
-    margin-right: 200px;
+    margin-left: 25%;
+    margin-right: 25%;
     padding-bottom: 50px;
     border: 1px grey solid;
 }
@@ -25,6 +25,14 @@
     padding: 0px 100px 0 100px;
 }
 
-.send-button {
-    padding: 80px 100px 0 100px;
+.login-button {
+    padding: 30px 100px 0 100px;
+}
+
+.register-button {
+    padding: 20px 100px 0 100px;
+}
+
+.footer {
+    padding-top: 250px;
 }

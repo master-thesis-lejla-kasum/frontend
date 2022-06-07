@@ -29,7 +29,7 @@ const Navbar = () => {
                             <Button color="white">STATISTIKA</Button>
                         </Stack>
                         <Stack direction="row">
-                            <Button color="white">Login</Button>
+                            <Button color="white" onClick={() => window.location.href = "/login"}>PRIJAVA</Button>
                         </Stack>
                     </Stack>
                 </Stack>

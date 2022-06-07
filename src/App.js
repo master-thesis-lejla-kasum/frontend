@@ -4,6 +4,7 @@ import Home from './components/Home/Home';
 import VaccineRegistration from './components/VaccineRegistration/VaccineRegistration';
 import TestRegistration from './components/TestRegistration/TestRegistration';
 import Registration from './components/Registration/Registration';
+import Login from './components/Login/Login';
 
 function App() {
 
@@ -38,6 +39,13 @@ function App() {
             path="/register"
             element={<Registration authBaseUrl={AUTH_BASE_URL} />}
           >
+          </Route>
+
+          <Route
+            path="/login"
+            element={<Login authBaseUrl={AUTH_BASE_URL} />}
+          >
+
           </Route>
         </Routes>
       </BrowserRouter>
