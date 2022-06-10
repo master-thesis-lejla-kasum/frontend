@@ -6,7 +6,7 @@ import BiotechOutlinedIcon from '@mui/icons-material/BiotechOutlined';
 import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
 
 
-const InfoBox = ({ iconType, title, content }) => {
+const InfoBox = ({ iconType, title, content, onClick }) => {
 
     const getIcon = (type) => {
         switch (type) {
@@ -20,7 +20,7 @@ const InfoBox = ({ iconType, title, content }) => {
     }
 
     return (
-        <div className="info-box">
+        <div onClick={onClick} className="info-box">
             <Stack>
                 <Stack alignItems="center">
                     {getIcon(iconType)}

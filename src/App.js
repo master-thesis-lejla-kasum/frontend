@@ -5,6 +5,8 @@ import VaccineRegistration from './components/VaccineRegistration/VaccineRegistr
 import TestRegistration from './components/TestRegistration/TestRegistration';
 import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
+import StaticInfoPage from './components/StaticContent/StaticInfoPage';
+import staticData from "./util/staticData";
 
 function App() {
 
@@ -45,7 +47,24 @@ function App() {
             path="/login"
             element={<Login authBaseUrl={AUTH_BASE_URL} />}
           >
+          </Route>
 
+          <Route
+            path="/covid-info"
+            element={<StaticInfoPage title={staticData[0].title} date={staticData[0].date} content={staticData[0].content} />}
+          >
+          </Route>
+
+          <Route
+            path="/test-info"
+            element={<StaticInfoPage title={staticData[1].title} date={staticData[1].date} content={staticData[1].content} />}
+          >
+          </Route>
+
+          <Route
+            path="/vacc-info"
+            element={<StaticInfoPage title={staticData[2].title} date={staticData[2].date} content={staticData[2].content} />}
+          >
           </Route>
         </Routes>
       </BrowserRouter>
