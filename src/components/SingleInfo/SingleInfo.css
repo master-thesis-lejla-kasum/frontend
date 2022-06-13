@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+* {
+    font-family: "Roboto";
+}
+
+.wrapper {
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+.form-wrapper {
+    margin-left: 200px;
+    margin-right: 200px;
+    padding-bottom: 50px;
+    border: none;
+}
+
+.title {
+    border-bottom: 4px #293241 solid;
+    padding: 10px 10px 10px 20px;
+    background-color: transparent;
+    margin-bottom: 45px;
+}
+
+.date {
+    color: grey;
+}

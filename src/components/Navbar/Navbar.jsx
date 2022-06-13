@@ -24,8 +24,8 @@ const Navbar = () => {
                         <Stack direction="row">
                             <Button color="white" onClick={() => window.location.href = "/"}>POČETNA</Button>
                             <Button color="white">O PORTALU</Button>
-                            <Button color="white">ŠTA JE COVID-19?</Button>
-                            <Button color="white">MJERE I PREPORUKE</Button>
+                            <Button color="white" onClick={() => window.location.href = "/covid-info"}>ŠTA JE COVID-19?</Button>
+                            <Button color="white" onClick={() => window.location.href = "info"}>MJERE I PREPORUKE</Button>
                             <Button color="white">STATISTIKA</Button>
                         </Stack>
                         <Stack direction="row">

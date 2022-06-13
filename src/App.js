@@ -7,6 +7,8 @@ import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
 import StaticInfoPage from './components/StaticContent/StaticInfoPage';
 import staticData from "./util/staticData";
+import Info from './components/Info/Info';
+import SingleInfo from './components/SingleInfo/SingleInfo';
 
 function App() {
 
@@ -64,6 +66,16 @@ function App() {
           <Route
             path="/vacc-info"
             element={<StaticInfoPage title={staticData[2].title} date={staticData[2].date} content={staticData[2].content} />}
+          >
+          </Route>
+          <Route
+            path="/info"
+            element={<Info covidBaseUrl={COVID_BASE_URL} />}
+          >
+          </Route>
+          <Route
+            path="/info/:id"
+            element={<SingleInfo covidBaseUrl={COVID_BASE_URL} />}
           >
           </Route>
         </Routes>

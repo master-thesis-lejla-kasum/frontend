@@ -85,7 +85,14 @@ const Home = () => {
                                 </Button>
                             </div>
                             <div>
-                                <Button variant="contained" color="secondary" size="large">TRENUTNE MJERE</Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    size="large"
+                                    onClick={() => window.location.href = "/info"}
+                                >
+                                    TRENUTNE MJERE
+                                </Button>
                             </div>
                         </Stack>
                     </div>
