@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+* {
+    font-family: "Roboto";
+}
+
+.admin_institution-wrapper {
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+.admin_institution-filters {
+    background-color: rgba(247, 239, 239, 0.2);
+    box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 2px 1px -1px rgb(0 0 0 / 20%);
+    padding: 30px 0 30px 10px;
+    margin-bottom: 50px;
+}

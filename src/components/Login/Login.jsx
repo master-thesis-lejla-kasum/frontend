@@ -5,6 +5,7 @@ import theme from "../../theme/theme";
 import Footer from "../Navbar/Footer";
 import Navbar from "../Navbar/Navbar";
 import authService from "../../service/authService";
+import getUserFromToken from "../../util/getUserFromToken";
 
 
 const Login = ({ authBaseUrl }) => {
@@ -25,9 +26,14 @@ const Login = ({ authBaseUrl }) => {
 
         authService.login(authBaseUrl, request)
             .then(response => {
-                //TODO Proper redirection based on role
+                document.cookie = "token=" + response.data.token + "; path=/; max-age=6000;";
+                var roles = getUserFromToken().roles;
+                localStorage.userRoles = roles;
+                console.log(roles);
+                if (roles.some(role => role.authority === "Admin")) {
+                    window.location.href = "/admin/institution"
+                }
                 setError("");
-                alert("uspio")
 
             })
             .catch(error => {

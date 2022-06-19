@@ -9,6 +9,7 @@ import StaticInfoPage from './components/StaticContent/StaticInfoPage';
 import staticData from "./util/staticData";
 import Info from './components/Info/Info';
 import SingleInfo from './components/SingleInfo/SingleInfo';
+import AdminInstitution from './components/AdminInstitution/AdminInstitution';
 
 function App() {
 
@@ -76,6 +77,12 @@ function App() {
           <Route
             path="/info/:id"
             element={<SingleInfo covidBaseUrl={COVID_BASE_URL} />}
+          >
+          </Route>
+
+          <Route
+            path="/admin/institution"
+            element={<AdminInstitution authBaseUrl={AUTH_BASE_URL} />}
           >
           </Route>
         </Routes>
