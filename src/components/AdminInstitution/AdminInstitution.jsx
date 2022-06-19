@@ -1,10 +1,11 @@
-import { IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, ThemeProvider, Typography, Collapse, Box, Paper, TableContainer, Button, InputAdornment, TextField, FormControlLabel, Checkbox } from "@mui/material";
+import { IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, ThemeProvider, Typography, Collapse, Box, Paper, TableContainer, Button, InputAdornment, TextField, FormControlLabel, Checkbox, Modal, Dialog, InputLabel, Select, OutlinedInput, MenuItem, ListItemText } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./AdminInstitution.css";
 import theme from "../../theme/theme";
 import AdminNavbar from "../Navbar/AdminNavbar";
 import getToken from "../../util/getToken";
 import institutionService from "../../service/institutionService";
+import roleService from "../../service/roleService";
 import { KeyboardArrowUp, KeyboardArrowDown, Search } from "@mui/icons-material";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Navbar/Footer";
@@ -12,19 +13,31 @@ import Footer from "../Navbar/Footer";
 
 
 const AdminInstitution = ({ authBaseUrl }) => {
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+        PaperProps: {
+            style: {
+                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                width: 250,
+            },
+        },
+    };
 
     const [institutions, setInstitutions] = useState([]);
     const [params, setParams] = useState({
         approved: false,
         name: ""
     });
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedInstitution, setSelectedInstitution] = useState({});
+    const [roles, setRoles] = useState([]);
 
     const columns = ["Identifikacija", "Naziv", "Entitet", "Kanton", "Opština", "Adresa", "Telefon", "Aktivacija"];
 
     useEffect(() => {
         //TODO check if has authority
 
-        console.log(params.approved)
         var editedParams = {
             approved: params.approved ? false : null,
             name: params.name
@@ -32,11 +45,21 @@ const AdminInstitution = ({ authBaseUrl }) => {
         institutionService.getAll(authBaseUrl, getToken("token"), editedParams)
             .then(res => {
                 setInstitutions(res.data);
-                console.log(res.data);
             })
             .catch(err => {
                 console.log(err);
             })
+
+        roleService.getAll(authBaseUrl, getToken("token"))
+            .then(res => {
+                var tempRoles = res.data.map((role) => ({ id: role.id, name: role.name, checked: false }));
+                setRoles(tempRoles);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+
 
     }, [params])
 
@@ -47,6 +70,16 @@ const AdminInstitution = ({ authBaseUrl }) => {
             [name]: value
         })
         )
+    }
+
+    function onApproveClick(institution) {
+        setOpenModal(true);
+        setSelectedInstitution(institution);
+    }
+
+    function handleRoleDropdownChange(event) {
+        var selected = event.target.value[event.target.value.length - 1]
+        setRoles(roles.map((row) => ({ ...row, checked: row.id == selected ? !row.checked : row.checked })));
     }
 
     function Row(props) {
@@ -76,7 +109,7 @@ const AdminInstitution = ({ authBaseUrl }) => {
                     <TableCell>{row.phoneNumber}</TableCell>
                     <TableCell>
                         {
-                            row.approved == true ? "Aktivna" : <Button variant="outlined" color="warning">Odobri</Button>
+                            row.approved == true ? "Aktivna" : <Button variant="outlined" color="success" onClick={(e) => onApproveClick(row)} >Odobri</Button>
                         }
                     </TableCell>
                 </TableRow>
@@ -111,6 +144,10 @@ const AdminInstitution = ({ authBaseUrl }) => {
                 </TableRow>
             </React.Fragment>
         )
+    }
+
+    function getRenderValue() {
+        return roles.filter(role => role.checked).map((role) => (role.name)).join();
     }
 
     return (
@@ -171,6 +208,41 @@ const AdminInstitution = ({ authBaseUrl }) => {
                     <Footer />
                 </Stack>
             </Stack>
+
+            <Dialog
+                open={openModal}
+                onClose={(e) => setOpenModal(false)}
+            >
+                <Stack className="admin_institution-modal" >
+                    <Stack>
+                        Dodjela autorizacijskih prava
+                    </Stack>
+
+                    <Stack>
+                        <Select
+                            id="admin_institutions-roles-checkbox"
+                            multiple
+                            value={roles}
+                            onChange={handleRoleDropdownChange}
+                            renderValue={getRenderValue}
+                            MenuProps={MenuProps}
+                        >
+                            {roles.map((role) => (
+                                <MenuItem key={role.id} value={role.id}>
+                                    <Checkbox checked={role.checked} />
+                                    <ListItemText primary={role.name} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Stack>
+
+                    <Stack direction="row">
+                        <Button color="success" variant="contained">Aktiviraj</Button>
+                        <Button color="error" variant="outlined" onClick={(e) => setOpenModal(false)}>Poništi</Button>
+                    </Stack>
+                </Stack>
+            </Dialog>
+
         </ThemeProvider>
     )
 }
