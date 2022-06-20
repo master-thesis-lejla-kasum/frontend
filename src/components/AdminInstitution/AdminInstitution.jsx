@@ -9,6 +9,7 @@ import roleService from "../../service/roleService";
 import { KeyboardArrowUp, KeyboardArrowDown, Search } from "@mui/icons-material";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Navbar/Footer";
+import accountService from "../../service/accountService";
 
 
 
@@ -29,7 +30,7 @@ const AdminInstitution = ({ authBaseUrl }) => {
         approved: false,
         name: ""
     });
-    const [openModal, setOpenModal] = useState(false);
+    const [openModal, setOpenModal] = useState(true);
     const [selectedInstitution, setSelectedInstitution] = useState({});
     const [roles, setRoles] = useState([]);
 
@@ -150,6 +151,46 @@ const AdminInstitution = ({ authBaseUrl }) => {
         return roles.filter(role => role.checked).map((role) => (role.name)).join();
     }
 
+    function onActivateClick() {
+        const updateInstitutionRequest = {
+            id: selectedInstitution.id,
+            identificationNumber: selectedInstitution.identificationNumber,
+            name: selectedInstitution.name,
+            entity: selectedInstitution.entity,
+            canton: selectedInstitution.canton,
+            municipality: selectedInstitution.municipality,
+            address: selectedInstitution.address,
+            phoneNumber: selectedInstitution.phoneNumber,
+            approved: true,
+            account: {
+                id: selectedInstitution.account.id
+            }
+        }
+
+        const updateAccountRequest = {
+            id: selectedInstitution.account.id,
+            name: selectedInstitution.account.name,
+            surname: selectedInstitution.account.surname,
+            roles: roles.filter(role => role.checked).map((role) => { return { id: role.id } })
+        }
+
+        institutionService.updateInstitution(authBaseUrl, getToken("token"), updateInstitutionRequest, updateInstitutionRequest.id)
+            .then(res => {
+                accountService.updateAccount(authBaseUrl, getToken("token"), updateAccountRequest, updateAccountRequest.id)
+                    .then(res => {
+                        setInstitutions(institutions.map((row) => ({ ...row, approved: row.id === selectedInstitution.id ? true : row.approved })))
+                        setOpenModal(false);
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <Stack spacing={10}>
@@ -214,11 +255,13 @@ const AdminInstitution = ({ authBaseUrl }) => {
                 onClose={(e) => setOpenModal(false)}
             >
                 <Stack className="admin_institution-modal" >
-                    <Stack>
-                        Dodjela autorizacijskih prava
+                    <Stack alignItems="center" className="admin_institution-modal-title">
+                        <h3>
+                            Dodjela autorizacijskih prava
+                        </h3>
                     </Stack>
 
-                    <Stack>
+                    <Stack className="admin_institution-modal-dropdown">
                         <Select
                             id="admin_institutions-roles-checkbox"
                             multiple
@@ -236,8 +279,8 @@ const AdminInstitution = ({ authBaseUrl }) => {
                         </Select>
                     </Stack>
 
-                    <Stack direction="row">
-                        <Button color="success" variant="contained">Aktiviraj</Button>
+                    <Stack direction="row" spacing={9} justifyContent="space-between">
+                        <Button color="success" variant="contained" onClick={onActivateClick}>Aktiviraj</Button>
                         <Button color="error" variant="outlined" onClick={(e) => setOpenModal(false)}>Poništi</Button>
                     </Stack>
                 </Stack>

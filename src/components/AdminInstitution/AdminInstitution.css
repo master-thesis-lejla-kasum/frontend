@@ -19,3 +19,12 @@
 .admin_institution-modal {
     padding: 50px;
 }
+
+.admin_institution-modal-title {
+    margin-bottom: 10px;
+    width: 400px;
+}
+
+.admin_institution-modal-dropdown {
+    margin-bottom: 30px;
+}
