@@ -12,4 +12,8 @@ function validEmail(value) {
     return regex.exec(value);
 }
 
-export { emptyOrNull, validBornId, validEmail };
+function isNegativeNumber(number) {
+    return number < 0;
+}
+
+export { emptyOrNull, validBornId, validEmail, isNegativeNumber };

@@ -6,7 +6,8 @@ function getUserFromToken() {
         var user = {
             id: JSON.parse(atob(token.split('.')[1])).id,
             email: JSON.parse(atob(token.split('.')[1])).username,
-            roles: JSON.parse(atob(token.split('.')[1])).roles
+            roles: JSON.parse(atob(token.split('.')[1])).roles,
+            institutionId: JSON.parse(atob(token.split('.')[1])).institutionId
         }
         return user;
     }

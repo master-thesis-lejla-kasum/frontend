@@ -7,7 +7,6 @@ import getToken from "../../util/getToken";
 import institutionService from "../../service/institutionService";
 import roleService from "../../service/roleService";
 import { KeyboardArrowUp, KeyboardArrowDown, Search } from "@mui/icons-material";
-import Navbar from "../Navbar/Navbar";
 import Footer from "../Navbar/Footer";
 import accountService from "../../service/accountService";
 

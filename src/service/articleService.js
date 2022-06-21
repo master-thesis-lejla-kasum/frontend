@@ -6,4 +6,6 @@ const getTotal = (baseUrl, params) => axios.get(baseUrl + "/api/v1/article/total
 
 const getById = (baseUrl, id) => axios.get(baseUrl + "/api/v1/article/" + id);
 
-export default { search, getTotal, getById };
+const create = (baseUrl, request, token) => axios.post(baseUrl + "/api/v1/article", request, { headers: { Authorization: "Bearer " + token } });
+
+export default { search, getTotal, getById, create };

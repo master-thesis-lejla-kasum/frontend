@@ -32,6 +32,8 @@ const Login = ({ authBaseUrl }) => {
                 console.log(roles);
                 if (roles.some(role => role.authority === "Admin")) {
                     window.location.href = "/admin/institution"
+                } else if (roles.some(role => role.authority === "Institution")) {
+                    window.location.href = "/institution/application"
                 }
                 setError("");
 

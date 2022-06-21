@@ -10,6 +10,9 @@ import staticData from "./util/staticData";
 import Info from './components/Info/Info';
 import SingleInfo from './components/SingleInfo/SingleInfo';
 import AdminInstitution from './components/AdminInstitution/AdminInstitution';
+import CovidArticleForm from './components/CovidPanel/CovidArticleForm';
+import CovidStatisticForm from './components/CovidPanel/CovidStatisticForm';
+import CovidApplication from './components/CovidPanel/CovidApplication';
 
 function App() {
 
@@ -83,6 +86,24 @@ function App() {
           <Route
             path="/admin/institution"
             element={<AdminInstitution authBaseUrl={AUTH_BASE_URL} />}
+          >
+          </Route>
+
+          <Route
+            path="/institution/article"
+            element={<CovidArticleForm covidBaseUrl={COVID_BASE_URL} />}
+          >
+          </Route>
+
+          <Route
+            path="/institution/statistic"
+            element={<CovidStatisticForm covidBaseUrl={COVID_BASE_URL} />}
+          >
+          </Route>
+
+          <Route
+            path="/institution/application"
+            element={<CovidApplication covidBaseUrl={COVID_BASE_URL} />}
           >
           </Route>
         </Routes>
