@@ -29,7 +29,7 @@ const AdminInstitution = ({ authBaseUrl }) => {
         approved: false,
         name: ""
     });
-    const [openModal, setOpenModal] = useState(true);
+    const [openModal, setOpenModal] = useState(false);
     const [selectedInstitution, setSelectedInstitution] = useState({});
     const [roles, setRoles] = useState([]);
 

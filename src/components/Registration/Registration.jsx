@@ -34,7 +34,6 @@ const Registration = ({ authBaseUrl }) => {
     }, [errors])
 
 
-
     function onNameChange(value) {
         delete errors.name;
         setName(value);

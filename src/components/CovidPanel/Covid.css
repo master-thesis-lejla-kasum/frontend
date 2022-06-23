@@ -24,3 +24,14 @@
 .covid_form-input {
     padding: 0px 100px 0 100px;
 }
+
+.covid_application-filters {
+    background-color: rgba(247, 239, 239, 0.2);
+    box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 2px 1px -1px rgb(0 0 0 / 20%);
+    padding: 30px 0 30px 10px;
+    margin-bottom: 50px;
+}
+
+.covid_filters-select-label {
+    color: rgb(29, 28, 28);
+}
