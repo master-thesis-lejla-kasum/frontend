@@ -84,6 +84,7 @@ const TestRegistration = ({ covidBaseUrl, authBaseUrl }) => {
 
     function onTestDateChange(value) {
         delete errors.testDate;
+        console.log(value)
         setTestDate(value);
     }
 

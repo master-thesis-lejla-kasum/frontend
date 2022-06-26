@@ -13,6 +13,7 @@ import AdminInstitution from './components/AdminInstitution/AdminInstitution';
 import CovidArticleForm from './components/CovidPanel/CovidArticleForm';
 import CovidStatisticForm from './components/CovidPanel/CovidStatisticForm';
 import CovidApplication from './components/CovidPanel/CovidApplication';
+import Statistic from './components/Statistic/Statistic';
 
 function App() {
 
@@ -104,6 +105,12 @@ function App() {
           <Route
             path="/institution/application"
             element={<CovidApplication covidBaseUrl={COVID_BASE_URL} />}
+          >
+          </Route>
+
+          <Route
+            path="/statistic"
+            element={<Statistic covidBaseUrl={COVID_BASE_URL} />}
           >
           </Route>
         </Routes>

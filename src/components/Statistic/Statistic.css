@@ -1,0 +1,20 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+* {
+    font-family: "Roboto";
+}
+
+.statistic_page-wrapper {
+    padding-left: 150px;
+    padding-right: 100px;
+}
+
+.statistic_page-filters {
+    background-color: rgba(247, 239, 239, 0.2);
+    box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 2px 1px -1px rgb(0 0 0 / 20%);
+    padding: 30px 0 30px 0;
+}
+
+.statistic_page-select-label {
+    color: rgb(29, 28, 28);
+}
